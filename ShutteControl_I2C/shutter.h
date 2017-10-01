@@ -16,6 +16,9 @@
 #define SH_TOP 5
 //! Shutter bottom window signal
 #define SH_BOTTOM 6
+//! Shot signal marker pin. Test the shooting duration
+//! for test purpose only
+#define SHOT_MARK 4
 //! Shutter motor ID
 #define SH_MOTOR 1
 //! Autofocus motor

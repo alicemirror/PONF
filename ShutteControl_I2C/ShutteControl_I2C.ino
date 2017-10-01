@@ -29,6 +29,11 @@
 //! Define I2CCONTROL if commands should be sent through I2C connection
 #undef _I2CCONTROL
 
+//! Enable the shooting marker pin for timing test on different values of shooting
+//! for test purpose only, disable in production.
+#define _SHOTMARK
+
+
 //! I2C data string
 String wData;
 
@@ -38,9 +43,6 @@ MotorControl motor;
 //! If defined every command is echoed on the serial terminal
 //! despite if the I2C or UART is used to send commands
 #define _SERIAL_ECHO
-
-//! Running global flag
-boolean isRunning;
 
 // ==============================================
 // Initialisation
@@ -64,8 +66,9 @@ void setup() {
 
   pinMode(SH_TOP, OUTPUT);
   pinMode(SH_BOTTOM, OUTPUT);
+  pinMode(SHOT_MARK, OUTPUT); // for testing only
 
-  isRunning = false;
+  initShutterMotor();
 
   // Print the initialisation message
   Serial.println(APP_TITLE);
@@ -87,32 +90,6 @@ void setup() {
  * diagnostic status of the TLE when a command involving a motor is executed.
  */
 void loop() {
-  int j;
-  boolean isRunStatus;
-
-  /*******************************************************************
-   * Removed, no longer supported
-  // -------------------------------------------------------------
-  // BLOCK 1 : MOTORS RUNNING STATUS
-  // -------------------------------------------------------------
-  // Check if at least one motor is running to test the error status
-  // Note: It is possible to isolate the error status, if any,
-  // for any motor. Here we make a simplification and check over
-  // the motor without filtering
-  isRunStatus = false;
-  for(j = 0; j < MAX_MOTORS; j++) {
-    if(motor.internalStatus[j].isRunning) {
-      isRunStatus = true;
-      j = MAX_MOTORS; // Force exit from loop
-    } // check for running motors
-  } // motors loop
-  // If at least one motor is running check for diagnostic
-  if(isRunStatus) {
-    if(motor.tleCheckDiagnostic()) {
-      motor.tleDiagnostic();
-    }
-  }
-  *******************************************************************/
 
 #ifdef _SERIALCONTROL
   // -------------------------------------------------------------
@@ -175,9 +152,9 @@ void shutterBottom(boolean s) {
     digitalWrite(SH_BOTTOM, 0);
 }
 
-//! Shotting sequence
+//! Shooting sequence
 //!
-//! \param shooting time
+//! \param t shooting ms
 void shot(int t) {
   // Lock bottom
   digitalWrite(SH_BOTTOM, 1);
@@ -188,7 +165,13 @@ void shot(int t) {
   digitalWrite(SH_TOP, 1);
   digitalWrite(SH_BOTTOM, 0);
   cycleShutterMotorWithDelay();
+#ifdef _SHOTMARK
+  digitalWrite(SHOT_MARK, 1);
+#endif
   delay(t);
+#ifdef _SHOTMARK
+  digitalWrite(SHOT_MARK, 0);
+#endif
   digitalWrite(SH_TOP, 0);
 }
 
