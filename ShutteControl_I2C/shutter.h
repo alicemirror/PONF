@@ -30,7 +30,4 @@
 #define Z_MIN_DC 50
 #define Z_MAX_DC 255
 
-
-
-
 #endif

@@ -40,8 +40,13 @@
 // Configuration command
 #define SHOW_CONF "conf"    ///< Dump the current settings
 
-// Shutter commands
-#define CMD_SH_MOTOR_CYCLE
+// Shutter commands (all prefixed with 'sh')
+#define SH_MOTOR_INIT "shInit"        ///< Initialise the shutter motor
+#define SH_MOTOR_CYCLE "shMotor"      ///< Exectue a shutter motor cycle
+#define SH_TOP_LOCK "shToplock"         ///< Lock the top shutter frame
+#define SH_TOP_UNLOCK "shTopunlock"     ///< Unlock the top shutter frame
+#define SH_BOTTOM_LOCK "shBottomlock"       ///< Lock the bottom shutter frame
+#define SH_BOTTOM_UNLOCK "shBottomunlock"   ///< Unlock the bottom shutter frame
 
 /* ***********************************************************
 #define MOTOR_START "start"   ///< start all

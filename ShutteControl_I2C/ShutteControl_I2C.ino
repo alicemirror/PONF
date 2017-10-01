@@ -35,19 +35,12 @@ String wData;
 //! Motor control class instance
 MotorControl motor;
 
-//! Status LED (for debug purposes only)
-#define LEDPIN 7
-
 //! If defined every command is echoed on the serial terminal
 //! despite if the I2C or UART is used to send commands
 #define _SERIAL_ECHO
 
 //! Running global flag
 boolean isRunning;
-//! Running animation frame number
-int runningFrame;
-//! Running frames
-String runningFrames[] = { RUNNING1, RUNNING2, RUNNING3, RUNNING4 };
 
 // ==============================================
 // Initialisation
@@ -69,19 +62,13 @@ void setup() {
   Wire.onRequest(i2cSendData);
 #endif
 
-  pinMode(LEDPIN, OUTPUT);
   pinMode(SH_TOP, OUTPUT);
   pinMode(SH_BOTTOM, OUTPUT);
 
   isRunning = false;
-  runningFrame = 0;
-
-  flashLED();
 
   // Print the initialisation message
   Serial.println(APP_TITLE);
-
-  initShutter();
 }
 
 // ==============================================
@@ -133,7 +120,6 @@ void loop() {
   // -------------------------------------------------------------
   // Serial commands parser
   if(Serial.available() > 0){
-    flashLED();
     parseCommand(Serial.readString());
   } // serial available
 #endif
@@ -145,7 +131,7 @@ void loop() {
 // ==============================================
 
 //! Initialise the shutter motor
-void initShutter(void) {
+void initShutterMotor(void) {
   // Enable shutter motor
   motor.currentMotor = SH_MOTOR;
   motor.internalStatus[SH_MOTOR-1].isEnabled = true;
@@ -154,19 +140,18 @@ void initShutter(void) {
   // PWM Disabled
   motor.setPWM(tle94112.TLE_NOPWM);
   // Passive freewheeling
-  motor.setMotorFreeWheeling(MOTOR_FW_PASSIVE);
+  motor.setMotorFreeWheeling(MOTOR_FW_ACTIVE);
   // Disable acceleration
   motor.setPWMRamp(RAMP_OFF);
   // Clockwise direction
   motor.setMotorDirection(MOTOR_DIRECTION_CW);
 
-  // Initalises the shutter windows
+  // Initalises the shutter windows Both solenoids released
   digitalWrite(SH_TOP, 0);
   digitalWrite(SH_BOTTOM, 0);
 }
 
-/** Exectues a single shutter motor cycle with delay
- */
+//! Exectues a single shutter motor cycle with delay
 void cycleShutterMotorWithDelay(void) {
   // Start-stop 100 ms test
   motor.startMotor(SH_MOTOR);
@@ -174,20 +159,25 @@ void cycleShutterMotorWithDelay(void) {
   motor.stopMotor(SH_MOTOR);
 }
 
+//! Lock/unlock the shutter top window
+void shutterTop(boolean s) {
+  if(s)
+    digitalWrite(SH_TOP, 1);
+  else
+    digitalWrite(SH_TOP, 0);
+}
+
+//! Lock/unlock the shutter bottom window
+void shutterBottom(boolean s) {
+  if(s)
+    digitalWrite(SH_BOTTOM, 1);
+  else
+    digitalWrite(SH_BOTTOM, 0);
+}
+
 // ==============================================
 // Message functions
 // ==============================================
-
-//! Short loop flashing led for signal
-void flashLED(void) {
-  int j;
-  for(j = 0; j < 2; j++) {
-    digitalWrite(LEDPIN, 1);
-    delay(50);
-    digitalWrite(LEDPIN, 0);
-    delay(50);
-  }
-}
 
 //! Send a message to the serial
 void serialMessage(String title, String description) {
@@ -264,6 +254,30 @@ void i2cSendData(){
   // =========================================================
   if(cmdString.equals(SHOW_CONF)) {
     motor.showInfo();
+  }
+  // =========================================================
+  // Shutter motor commands
+  // =========================================================
+  else if(cmdString.equals(SH_MOTOR_INIT)) {
+    initShutterMotor();
+  }
+  else if(cmdString.equals(SH_MOTOR_CYCLE)) {
+    cycleShutterMotorWithDelay();
+  }
+  // =========================================================
+  // Shutter window commands
+  // =========================================================
+  else if(cmdString.equals(SH_TOP_LOCK)) {
+    shutterTop(true);
+  }
+  else if(cmdString.equals(SH_TOP_UNLOCK)) {
+    shutterTop(false);
+  }
+  else if(cmdString.equals(SH_BOTTOM_LOCK)) {
+    shutterBottom(true);
+  }
+  else if(cmdString.equals(SH_BOTTOM_UNLOCK)) {
+    shutterBottom(false);
   }
   else
     Serial << CMD_WRONGCMD << " '" << cmdString << "'" << endl;

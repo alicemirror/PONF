@@ -14,9 +14,9 @@
 #define _MOTOR
 
 //! Application title shown on startup and after reset
-#define APP_TITLE "CM3 I2C PONF Ver.0.0.2"
+#define APP_TITLE "CM3 I2C PONF Ver.0.0.4"
 
-#undef _HIGHCURRENT
+#define _HIGHCURRENT
 #undef _MOTORDEBUG
 
 //! Avoid too many openload error messages when starting acceleration
@@ -91,11 +91,6 @@
 #define TLE_MOTOR_STOPPING "Stopping"
 #define TLE_MOTOR_HALT "Halted"
 #define TLE_MOTOR_RUN "Running"
-
-#define RUNNING1 "("
-#define RUNNING2 "^"
-#define RUNNING3 ")"
-#define RUNNING4 "v"
 
 // ======================================================================
 //        LCD String
