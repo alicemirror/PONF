@@ -48,6 +48,29 @@
 #define SH_BOTTOM_LOCK "shBottomlock"       ///< Lock the bottom shutter frame
 #define SH_BOTTOM_UNLOCK "shBottomunlock"   ///< Unlock the bottom shutter frame
 
+// Shooting
+#define SHOT_8S "8s"      ///< 8000 ms = 8 sec
+#define SHOT_4S "4s"      ///< 4000 ms = 4 sec
+#define SHOT_2S "2s"      ///< 2000 ms = 2 sec
+#define SHOT_1S "1s"      ///< 1000 ms = 1 sec
+#define SHOT_2 "2"        ///< 500 ms = 1/2 sec
+#define SHOT_4 "4"        ///< 250 ms = 1/4 sec
+#define SHOT_8 "8"        ///< 125 ms = 1/8 sec
+#define SHOT_15 "15"      ///< 66 ms = 1/15 sec
+#define SHOT_30 "30"      ///< 33 ms = 1/30 sec
+#define SHOT_60 "60"      ///< 16 ms = 1/60 sec
+#define SHOT_125 "125"    ///< 6 ms = 1/125 sec
+#define SHOT_250 "250"    ///< 4 ms = 1/250 sec
+#define SHOT_400 "400"    ///< 2 ms = 1/400 sec
+#define SHOT_1000 "1000"  ///< 1 ms = 1/1000 sec
+
+#define SHOT_MULTI125 "m125"    ///< sequential shots 1/125 sec
+#define SHOT_MULTI250 "m250"    ///< sequential shots 1/250 sec
+#define SHOT_MULTI400 "m400"    ///< sequential shots 1/400 sec
+#define SHOT_MULTI1000 "m1000"  ///< sequential shots 1/1000 sec
+
+#define MULTI_SHOOTING 10   ///< Number of multiple shots in sequence
+
 /* ***********************************************************
 #define MOTOR_START "start"   ///< start all
 #define MOTOR_STOP "stop"     ///< stop all

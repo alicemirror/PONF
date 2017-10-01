@@ -175,6 +175,23 @@ void shutterBottom(boolean s) {
     digitalWrite(SH_BOTTOM, 0);
 }
 
+//! Shotting sequence
+//!
+//! \param shooting time
+void shot(int t) {
+  // Lock bottom
+  digitalWrite(SH_BOTTOM, 1);
+  // Load load shutter
+  cycleShutterMotorWithDelay();
+
+  // Shot
+  digitalWrite(SH_TOP, 1);
+  digitalWrite(SH_BOTTOM, 0);
+  cycleShutterMotorWithDelay();
+  delay(t);
+  digitalWrite(SH_TOP, 0);
+}
+
 // ==============================================
 // Message functions
 // ==============================================
@@ -278,6 +295,71 @@ void i2cSendData(){
   }
   else if(cmdString.equals(SH_BOTTOM_UNLOCK)) {
     shutterBottom(false);
+  }
+  // =========================================================
+  // Shooting commands (up to 1/1000)
+  // =========================================================
+  else if(cmdString.equals(SHOT_8S)) {
+    shot(8000);
+  }
+  else if(cmdString.equals(SHOT_4S)) {
+    shot(4000);
+  }
+  else if(cmdString.equals(SHOT_2S)) {
+    shot(2000);
+  }
+  else if(cmdString.equals(SHOT_1S)) {
+    shot(1000);
+  }
+  else if(cmdString.equals(SHOT_2)) {
+    shot(500);
+  }
+  else if(cmdString.equals(SHOT_4)) {
+    shot(250);
+  }
+  else if(cmdString.equals(SHOT_8)) {
+    shot(125);
+  }
+  else if(cmdString.equals(SHOT_15)) {
+    shot(66);
+  }
+  else if(cmdString.equals(SHOT_30)) {
+    shot(33);
+  }
+  else if(cmdString.equals(SHOT_60)) {
+    shot(16);
+  }
+  else if(cmdString.equals(SHOT_125)) {
+    shot(6);
+  }
+  else if(cmdString.equals(SHOT_250)) {
+    shot(4);
+  }
+  else if(cmdString.equals(SHOT_400)) {
+    shot(2);
+  }
+  else if(cmdString.equals(SHOT_1000)) {
+    shot(1);
+  }
+  else if(cmdString.equals(SHOT_MULTI125)) {
+    int j;
+    for(j = 0; j < MULTI_SHOOTING; j++)
+      shot(6);
+  }
+  else if(cmdString.equals(SHOT_MULTI250)) {
+    int j;
+    for(j = 0; j < MULTI_SHOOTING; j++)
+      shot(4);
+  }
+  else if(cmdString.equals(SHOT_MULTI400)) {
+    int j;
+    for(j = 0; j < MULTI_SHOOTING; j++)
+      shot(2);
+  }
+  else if(cmdString.equals(SHOT_MULTI1000)) {
+    int j;
+    for(j = 0; j < MULTI_SHOOTING; j++)
+      shot(1);
   }
   else
     Serial << CMD_WRONGCMD << " '" << cmdString << "'" << endl;
