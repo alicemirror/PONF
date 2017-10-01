@@ -94,11 +94,17 @@ void setup() {
  * \note tHE i2c Data availability and reading from master is implemented in a
  * callback function. Data reading enable the command parsing immediately then
  * the function come back to the main loop cycle processing the other statuses
+ * 
+ * \warning The diagnostic check based on the status of the motors running has been
+ * removed from the loop as the motos control methods check by themselves the
+ * diagnostic status of the TLE when a command involving a motor is executed.
  */
 void loop() {
   int j;
   boolean isRunStatus;
 
+  /*******************************************************************
+   * Removed, no longer supported
   // -------------------------------------------------------------
   // BLOCK 1 : MOTORS RUNNING STATUS
   // -------------------------------------------------------------
@@ -119,6 +125,7 @@ void loop() {
       motor.tleDiagnostic();
     }
   }
+  *******************************************************************/
 
 #ifdef _SERIALCONTROL
   // -------------------------------------------------------------

@@ -40,6 +40,9 @@
 // Configuration command
 #define SHOW_CONF "conf"    ///< Dump the current settings
 
+// Shutter commands
+#define CMD_SH_MOTOR_CYCLE
+
 /* ***********************************************************
 #define MOTOR_START "start"   ///< start all
 #define MOTOR_STOP "stop"     ///< stop all
