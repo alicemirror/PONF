@@ -190,7 +190,7 @@ void MotorControl::stopMotor(int m) {
   motorPWMStop();
   motorStopHB(m - 1);
   if(tleCheckDiagnostic())
-    tleDiagnostic(j, TLE_MOTOR_STOPPING);
+    tleDiagnostic(m - 1, TLE_MOTOR_STOPPING);
 }
 
 void MotorControl::motorPWMAnalogDC(void) {

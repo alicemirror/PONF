@@ -1,5 +1,5 @@
 /**
- \brief Infineon TLE94112LE and XMC1100 Controlling the camera shutter. 
+ \brief Infineon TLE94112LE and XMC1100 Controlling the camera shutter + autofocus and zoom external motors 
  
  Needs the ShutterControl circuit to work. For more details see 
  github.com/alicemirror/PONFShutterControl
@@ -164,7 +164,7 @@ void cycleShutterMotorWithDelay(void) {
   // Start-stop 100 ms test
   motor.startMotor(SH_MOTOR);
   delay(SH_MOTOR_MS);
-  motor.stopMotors(SH_MOTOR);
+  motor.stopMotor(SH_MOTOR);
 }
 
 // ==============================================
@@ -226,7 +226,11 @@ void i2cSendData(){
  * Parse the command string and echo the executing message or 
  * command unknown error.
  * 
- * \param commandString the string coming from the serial
+ * The command is removed from the last two characters before
+ * effective parsing. Use this function when the command comes
+ * from a serial terminal
+ * 
+ * \param commandString the string coming from the serial+CRLF
  *  ***********************************************************
  */
  void parseCommand(String cmdString) {
@@ -237,149 +241,24 @@ void i2cSendData(){
   cmdlen = cmdString.length() - 2;
   commandString.remove(cmdlen);
 
+  parseNoCRLF(commandString);
+ }
+/** ***********************************************************
+ * Parse the command string and echo the executing message or 
+ * command unknown error.
+ * 
+ * \param cmdString the string coming from the serial+CRLF
+ *  ***********************************************************
+ */
+ void parseNoCRLF(String cmdString) {
+
   // =========================================================
   // Informative commands
   // =========================================================
-  if(commandString.equals(SHOW_CONF)) {
+  if(cmdString.equals(SHOW_CONF)) {
     motor.showInfo();
   }
-  // =========================================================
-  // Motor select
-  // =========================================================
-  else if(commandString.equals(MOTOR_1)) {
-    motor.currentMotor = 1;
-    serialMessage(CMD_SET, commandString);
-  }
-  else if(commandString.equals(MOTOR_2)) {
-    motor.currentMotor = 2;
-    serialMessage(CMD_SET, commandString);
-  }
-  else if(commandString.equals(MOTOR_3)) {
-    motor.currentMotor = 3;
-    serialMessage(CMD_SET, commandString);
-  }
-  else if(commandString.equals(MOTOR_4)) {
-    motor.currentMotor = 4;
-    serialMessage(CMD_SET, commandString);
-  }
-  else if(commandString.equals(MOTOR_5)) {
-    motor.currentMotor = 5;
-    serialMessage(CMD_SET, commandString);
-  }
-  else if(commandString.equals(MOTOR_6)) {
-    motor.currentMotor = 6;
-    serialMessage(CMD_SET, commandString);
-  }
-  // =========================================================
-  // Motor enable
-  // =========================================================
-  else if(commandString.equals(MOTOR_ALL)) {
-    int j;
-    motor.currentMotor = 0;
-    for(j = 0; j < MAX_MOTORS; j++) {
-      motor.internalStatus[j].isEnabled = true;
-    }
-    serialMessage(CMD_SET, commandString);
-  }
-  else if(commandString.equals(MOTOR_NONE)) {
-    int j;
-    motor.currentMotor = 0;
-    for(j = 0; j < MAX_MOTORS; j++) {
-      motor.internalStatus[j].isEnabled = false;
-    }
-    serialMessage(CMD_SET, commandString);
-  }
-  else if(commandString.equals(EN_MOTOR_1)) {
-    motor.currentMotor = 1;
-    motor.internalStatus[0].isEnabled = true;
-    serialMessage(CMD_SET, commandString);
-  }
-  else if(commandString.equals(EN_MOTOR_2)) {
-    motor.currentMotor = 2;
-    motor.internalStatus[1].isEnabled = true;
-    serialMessage(CMD_SET, commandString);
-  }
-  else if(commandString.equals(EN_MOTOR_3)) {
-    motor.currentMotor = 3;
-    motor.internalStatus[2].isEnabled = true;
-    serialMessage(CMD_SET, commandString);
-  }
-  else if(commandString.equals(EN_MOTOR_4)) {
-    motor.currentMotor = 4;
-    motor.internalStatus[3].isEnabled = true;
-    serialMessage(CMD_SET, commandString);
-  }
-  else if(commandString.equals(EN_MOTOR_5)) {
-    motor.currentMotor = 5;
-    motor.internalStatus[4].isEnabled = true;
-    serialMessage(CMD_SET, commandString);
-  }
-  else if(commandString.equals(EN_MOTOR_6)) {
-    motor.currentMotor = 6;
-    motor.internalStatus[5].isEnabled = true;
-    serialMessage(CMD_SET, commandString);
-  }
-  // =========================================================
-  // PWM channel motors assignment
-  // =========================================================
-  else if(commandString.equals(PWM_0)) {
-    motor.setPWM(tle94112.TLE_NOPWM);
-    serialMessage(CMD_PWM, commandString);
-  }
-  else if(commandString.equals(PWM_80)) {
-    motor.setPWM(tle94112.TLE_PWM1);
-    serialMessage(CMD_PWM, commandString);
-  }
-  else if(commandString.equals(PWM_100)) {
-    motor.setPWM(tle94112.TLE_PWM2);
-    serialMessage(CMD_PWM, commandString);
-  }
-  else if(commandString.equals(PWM_200)) {
-    motor.setPWM(tle94112.TLE_PWM3);
-    serialMessage(CMD_PWM, commandString);
-  }
-  // =========================================================
-  // PWM channel select for duty cycle setting
-  // =========================================================
-  else if(commandString.equals(PWM80_DC)) {
-    motor.currentPWM = PWM80_CHID;
-    serialMessage(CMD_SET, commandString);
-  }
-  else if(commandString.equals(PWM100_DC)) {
-    motor.currentPWM = PWM100_CHID;
-    serialMessage(CMD_SET, commandString);
-  }
-  else if(commandString.equals(PWM200_DC)) {
-    motor.currentPWM = PWM200_CHID;
-    serialMessage(CMD_SET, commandString);
-  }
-  else if(commandString.equals(PWMALL_DC)) {
-    motor.currentPWM = 0;
-    serialMessage(CMD_SET, commandString);
-  }
-  // =========================================================
-  // Direction setting
-  // =========================================================
-  else if(commandString.equals(DIRECTION_CW)) {
-    motor.setMotorDirection(MOTOR_DIRECTION_CW);
-    serialMessage(CMD_DIRECTION, commandString);
-  }
-  else if(commandString.equals(DIRECTION_CCW)) {
-    motor.setMotorDirection(MOTOR_DIRECTION_CCW);
-    serialMessage(CMD_DIRECTION, commandString);
-  }
-  // =========================================================
-  // Freewheeling mode
-  // =========================================================
-  else if(commandString.equals(FW_ACTIVE)) {
-    motor.setMotorFreeWheeling(MOTOR_FW_ACTIVE);
-    serialMessage(CMD_MODE, commandString);
-  }
-  else if(commandString.equals(FW_PASSIVE)) {
-    motor.setMotorFreeWheeling(MOTOR_FW_PASSIVE);
-    serialMessage(CMD_MODE, commandString);
-  }
   else
-    Serial << CMD_WRONGCMD << " '" << commandString << "'" << endl;
+    Serial << CMD_WRONGCMD << " '" << cmdString << "'" << endl;
  }
 
