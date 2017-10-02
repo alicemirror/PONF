@@ -14,7 +14,7 @@
 #define _MOTOR
 
 //! Application title shown on startup and after reset
-#define APP_TITLE "CM3 I2C PONF Ver.0.0.7"
+#define APP_TITLE "CM3 I2C PONF Ver.0.0.8"
 
 #define _HIGHCURRENT
 #undef _MOTORDEBUG

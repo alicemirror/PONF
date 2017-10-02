@@ -31,7 +31,7 @@
 
 //! Enable the shooting marker pin for timing test on different values of shooting
 //! for test purpose only, disable in production.
-#define _SHOTMARK
+#undef _SHOTMARK
 
 
 //! I2C data string
@@ -121,7 +121,7 @@ void initShutterMotor(void) {
   // Disable acceleration
   motor.setPWMRamp(RAMP_OFF);
   // Clockwise direction
-  motor.setMotorDirection(MOTOR_DIRECTION_CW);
+  motor.setMotorDirection(MOTOR_DIRECTION_CCW);
 
   // Initalises the shutter windows Both solenoids released
   digitalWrite(SH_TOP, 0);
@@ -162,8 +162,9 @@ void shot(int t) {
   cycleShutterMotorWithDelay();
 
   // Shot
-  digitalWrite(SH_TOP, 1);
   digitalWrite(SH_BOTTOM, 0);
+  delay(1);
+  digitalWrite(SH_TOP, 1);
   cycleShutterMotorWithDelay();
 #ifdef _SHOTMARK
   digitalWrite(SHOT_MARK, 1);

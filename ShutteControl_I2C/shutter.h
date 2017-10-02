@@ -26,7 +26,7 @@
 //! Zoom motor
 #define Z_MOTOR 3
 //! Motor cycle duration (ms)
-#define SH_MOTOR_MS 25
+#define SH_MOTOR_MS 5
 //! PWM Min/Max duty cycle for the AF and ZOOM motors
 #define AF_MIN_DC 32
 #define AF_MAX_DC 128
